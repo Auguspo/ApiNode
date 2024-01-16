@@ -7,6 +7,12 @@ const carritoItemSchema = new mongoose.Schema({
 
 const carritoSchema = new mongoose.Schema({
   items: [carritoItemSchema],
+  direccionEntrega: {
+    calle: { type: String, required: true },
+    ciudad: { type: String, required: true },
+    codigoPostal: { type: String, required: true },
+  },
+  total: { type: Number, required: true },
 });
 
 const Carrito = mongoose.model('Carrito', carritoSchema);
