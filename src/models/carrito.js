@@ -13,7 +13,7 @@ const carritoSchema = new mongoose.Schema({
     codigoPostal: { type: String, required: true },
   },
   total: { type: Number, required: true },
-});
+}, { versionKey: false });
 
 const Carrito = mongoose.model('Carrito', carritoSchema);
 
