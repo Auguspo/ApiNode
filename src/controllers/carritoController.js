@@ -4,12 +4,13 @@ import Carrito from '../models/carrito.js';
 class CarritoController {
   async getCarrito(req, res) {
     try {
-      const carrito = await Carrito.findOne();
-      res.json(carrito || { items: [], direccionEntrega: {}, total: 0 });
+      const carrito = await Carrito.find().populate('items.productoId');
+      res.json(carrito || []);
     } catch (error) {
       res.status(500).json({ error: 'Error al obtener el carrito' });
     }
   }
+  
 
   async agregarAlCarrito(req, res) {
     const { items, direccionEntrega, total } = req.body;
@@ -36,18 +37,16 @@ class CarritoController {
         return res.status(400).json({ error: validationResult.error.details[0].message });
       }
 
-      let carrito = await Carrito.findOne();
-      if (!carrito) {
-        carrito = new Carrito();
-      }
+      // Crear un nuevo documento de carrito
+      const nuevoCarrito = new Carrito({
+        items,
+        direccionEntrega,
+        total,
+      });
 
-      carrito.items = items;
-      carrito.direccionEntrega = direccionEntrega;
-      carrito.total = total;
+      await nuevoCarrito.save();
 
-      await carrito.save();
-
-      res.status(201).json(carrito);
+      res.status(201).json(nuevoCarrito);
     } catch (error) {
       res.status(500).json({ error: 'Error al agregar productos al carrito' });
     }
@@ -55,3 +54,4 @@ class CarritoController {
 }
 
 export default new CarritoController();
+  
